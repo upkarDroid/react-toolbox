@@ -75,7 +75,7 @@ const rippleFactory = (options = {}) => {
       addRippleRemoveEventListener (rippleKey) {
         const self = this;
         events.addEventListenerOnTransitionEnded(this.refs[rippleKey], function onOpacityEnd (e) {
-          if (e.propertyName === 'opacity' || e.propertyName === 'transform') {
+          if (e.propertyName === 'opacity') {
             if (self.props.onRippleEnded) self.props.onRippleEnded(e);
             events.removeEventListenerOnTransitionEnded(self.refs[rippleKey], onOpacityEnd);
             self.setState({
@@ -208,22 +208,26 @@ const rippleFactory = (options = {}) => {
 
       handleTouchStart = (event) => {
         event.stopPropagation();
-        const self = this;
+        if(this.props.onTouchStart) {
+          this.props.onTouchStart(event);
+        }
         if(!this.props.disable &&  event.touches) {
-            this.getTouchStartCoordinates(event);
+            this.setTouchStartCoordinates(event);
             this.startTime = Date.now();
         }
       };
 
-      getTouchStartCoordinates = (event) => {
+      setTouchStartCoordinates = (event) => {
         this.firstTouchY = event.touches[0].clientY;
         this.firstTouchX = event.touches[0].clientX;
       }
 
       handleTouchEnd = (event) => {
+        if(this.props.onTouchEnd) {
+          this.props.onTouchEnd(event);
+        }
         // Stop trying to abort if we're already 300ms into the animation
         const timeSinceStart = Math.abs(Date.now() - this.startTime);
-        const self = this;
         if(timeSinceStart > 300) {
           return;
         }
@@ -234,7 +238,7 @@ const rippleFactory = (options = {}) => {
         const deltaX = Math.abs(x - this.firstTouchX);
         // Call it a scroll after an arbitrary 6px (feels reasonable in testing)
         if (deltaY <= 6 || deltaX <= 6) {
-            self.animateRipple(x,y,true);
+            this.animateRipple(x,y,true);
         }
       };
 
