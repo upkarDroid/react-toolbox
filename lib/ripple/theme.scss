@@ -12,6 +12,7 @@
   background-color: currentColor;
   border-radius: 50%;
   transform-origin: 50% 50%;
+  opacity : $ripple-initial-opacity;
 }
 
 .rippleWrapper {
@@ -28,15 +29,14 @@
   @extend %ripple;
   transition-duration: $ripple-duration;
   &.rippleRestarting {
-    opacity: $ripple-final-opacity;
-    transition-property: none;
+    opacity : $ripple-initial-opacity;
+    transition-property: opacity,transform;
   }
   &.rippleActive {
     opacity: $ripple-final-opacity;
-    transition-property: transform;
+    transition-property:opacity, transform;
   }
   &:not(.rippleActive):not(.rippleRestarting) {
-    opacity: 0;
     transition-property: opacity, transform;
   }
 }

@@ -65,13 +65,6 @@ const rippleFactory = (options = {}) => {
         }
       }
 
-      componentWillUnmount () {
-        // Remove document event listeners for ripple if they still exists
-        Object.keys(this.state.ripples).forEach(key => {
-          this.state.ripples[key].endRipple();
-        });
-      }
-
       /**
        * Add an event listener to the reference with given key so when the animation transition
        * ends we can be sure that it finished and it can be safely removed from the state.
@@ -85,7 +78,9 @@ const rippleFactory = (options = {}) => {
           if (e.propertyName === 'opacity') {
             if (self.props.onRippleEnded) self.props.onRippleEnded(e);
             events.removeEventListenerOnTransitionEnded(self.refs[rippleKey], onOpacityEnd);
-            self.setState({ ripples: utils.removeObjectKey(rippleKey, self.state.ripples) });
+            self.setState({
+              ripples: utils.removeObjectKey(rippleKey, self.state.ripples)
+            });
           }
         });
       }
@@ -106,8 +101,7 @@ const rippleFactory = (options = {}) => {
           const { top, left, width } = this.getDescriptor(x, y);
           const noRipplesActive = Object.keys(this.state.ripples).length === 0;
           const key = this.props.rippleMultiple || noRipplesActive ? this.getNextKey() : this.getLastKey();
-          const endRipple = this.addRippleDeactivateEventListener(isTouch, key);
-          const initialState = { active: false, restarting: true, top, left, width, endRipple };
+          const initialState = { active: false, restarting: true, top, left, width };
           const runningState = { active: true, restarting: false };
           this.setState(update(this.state, { ripples: { [key]: { $set: initialState } } }), () => {
             this.refs[key].offsetWidth; //eslint-disable-line no-unused-expressions
@@ -213,10 +207,38 @@ const rippleFactory = (options = {}) => {
       };
 
       handleTouchStart = (event) => {
-        if (this.props.onTouchStart) this.props.onTouchStart(event);
-        if (!this.props.disabled) {
-          const { x, y } = events.getTouchPosition(event);
-          this.animateRipple(x, y, true);
+        event.stopPropagation();
+        if(this.props.onTouchStart) {
+          this.props.onTouchStart(event);
+        }
+        if(!this.props.disable &&  event.touches) {
+            this.setTouchStartCoordinates(event);
+            this.startTime = Date.now();
+        }
+      };
+
+      setTouchStartCoordinates = (event) => {
+        this.firstTouchY = event.touches[0].clientY;
+        this.firstTouchX = event.touches[0].clientX;
+      }
+
+      handleTouchEnd = (event) => {
+        if(this.props.onTouchEnd) {
+          this.props.onTouchEnd(event);
+        }
+        // Stop trying to abort if we're already 300ms into the animation
+        const timeSinceStart = Math.abs(Date.now() - this.startTime);
+        if(timeSinceStart > 300) {
+          return;
+        }
+        const x = event.changedTouches[0].clientX;
+        const y = event.changedTouches[0].clientY;
+        // If the user is scrolling...
+        const deltaY = Math.abs(y - this.firstTouchY);
+        const deltaX = Math.abs(x - this.firstTouchX);
+        // Call it a scroll after an arbitrary 6px (feels reasonable in testing)
+        if (deltaY <= 6 || deltaX <= 6) {
+            this.animateRipple(x,y,true);
         }
       };
 
@@ -246,7 +268,7 @@ const rippleFactory = (options = {}) => {
 
         if (!ripple) return <ComposedComponent children={children} {...other} />;
         return (
-          <ComposedComponent {...other} onMouseDown={this.handleMouseDown} onTouchStart={this.handleTouchStart}>
+          <ComposedComponent {...other} onMouseDown={this.handleMouseDown} onTouchStart={this.handleTouchStart} onTouchEnd={this.handleTouchEnd}>
             {children}
             {Object.keys(ripples).map(key => this.renderRipple(key, rippleClassName, ripples[key]))}
           </ComposedComponent>
