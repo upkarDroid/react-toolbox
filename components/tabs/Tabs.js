@@ -153,8 +153,8 @@ const factory = (Tab, TabContent) => {
         <div ref='tabs' data-react-toolbox='tabs' className={classes}>
           <nav className={theme.navigation} ref='navigation'>
             {this.renderHeaders(headers)}
+            <span className={theme.pointer} style={this.state.pointer} />
           </nav>
-          <span className={theme.pointer} style={this.state.pointer} />
           {this.renderContents(contents)}
         </div>
       );
