@@ -95,7 +95,7 @@ const factory = (Tab, TabContent) => {
       this.pointerTimeout = setTimeout(() => {
         const startPoint = this.refs.tabs.getBoundingClientRect().left;
         const label = this.refs.navigation.children[idx].getBoundingClientRect();
-        const lableOffsetLeft = this.refs.navigation.children[idx].offsetLeft;
+        const labelOffsetLeft = this.refs.navigation.children[idx].offsetLeft;
         this.setState({
           pointer: {
             top: `${this.refs.navigation.getBoundingClientRect().height}px`,
