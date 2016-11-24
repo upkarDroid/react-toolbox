@@ -115,15 +115,6 @@
   },
   "license": "MIT",
   "peerDependencies": {
-<<<<<<< HEAD
-    "classnames": "~2.2.0",
-    "immutability-helper": "~2.0.0",
-    "normalize.css": "~4.2.0",
-    "react": "~0.14 || ^15.3.0",
-    "react-addons-css-transition-group": "~0.14.0 || ~15.3.0",
-    "react-dom": "~0.14.0 || ~15.3.0"
-  }
-=======
     "classnames": "^2.2.0",
     "immutability-helper": "^2.0.0",
     "react": "^0.14 || ~15.4.0",
@@ -131,5 +122,4 @@
     "react-dom": "^0.14.0 || ~15.4.0"
   },
   "pre-commit": "lint:staged"
->>>>>>> 941e41d6d0dace33a99877a6ebd56a10d9fc0b72
 }
