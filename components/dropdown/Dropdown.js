@@ -20,6 +20,7 @@ const factory = (Input) => {
       onChange: PropTypes.func,
       onClick: PropTypes.func,
       onFocus: PropTypes.func,
+      required: PropTypes.bool,
       source: PropTypes.array.isRequired,
       template: PropTypes.func,
       theme: PropTypes.shape({
@@ -30,6 +31,7 @@ const factory = (Input) => {
         errored: PropTypes.string,
         field: PropTypes.string,
         label: PropTypes.string,
+        required: PropTypes.string,
         selected: PropTypes.string,
         templateValue: PropTypes.string,
         up: PropTypes.string,
@@ -46,7 +48,8 @@ const factory = (Input) => {
       auto: true,
       className: '',
       allowBlank: true,
-      disabled: false
+      disabled: false,
+      required: false
     };
 
     state = {
@@ -56,21 +59,34 @@ const factory = (Input) => {
 
     componentWillUpdate (nextProps, nextState) {
       if (!this.state.active && nextState.active) {
-        events.addEventsToDocument({click: this.handleDocumentClick});
+        events.addEventsToDocument(this.getDocumentEvents());
       }
     }
 
     componentDidUpdate (prevProps, prevState) {
       if (prevState.active && !this.state.active) {
-        events.removeEventsFromDocument({click: this.handleDocumentClick});
+        events.removeEventsFromDocument(this.getDocumentEvents());
       }
     }
 
     componentWillUnmount () {
       if (this.state.active) {
-        events.removeEventsFromDocument({click: this.handleDocumentClick});
+        events.removeEventsFromDocument(this.getDocumentEvents());
       }
     }
+
+    getDocumentEvents = () => ({
+      click: this.handleDocumentClick,
+      touchend: this.handleDocumentClick
+    });
+
+    open = () => {
+      const client = event.target.getBoundingClientRect();
+      const screenHeight = window.innerHeight || document.documentElement.offsetHeight;
+      const up = this.props.auto ? client.top > ((screenHeight / 2) + client.height) : false;
+      if (this.inputNode) this.inputNode.blur();
+      this.setState({active: true, up});
+    };
 
     close = () => {
       if (this.state.active) {
@@ -85,13 +101,9 @@ const factory = (Input) => {
     };
 
     handleClick = (event) => {
+      this.open();
       events.pauseEvent(event);
-      const client = event.target.getBoundingClientRect();
-      const screen_height = window.innerHeight || document.documentElement.offsetHeight;
-      const up = this.props.auto ? client.top > ((screen_height / 2) + client.height) : false;
       if (this.props.onClick) this.props.onClick(event);
-      if (this.props.onFocus) this.props.onFocus(event);
-      this.setState({active: true, up});
     };
 
     handleSelect = (item, event) => {
@@ -101,7 +113,7 @@ const factory = (Input) => {
           event.target.name = this.props.name;
         }
         this.props.onChange(item, event);
-        this.setState({active: false});
+        this.close();
       }
     };
 
@@ -118,7 +130,8 @@ const factory = (Input) => {
       const { theme } = this.props;
       const className = classnames(theme.field, {
         [theme.errored]: this.props.error,
-        [theme.disabled]: this.props.disabled
+        [theme.disabled]: this.props.disabled,
+        [theme.required]: this.props.required
       });
 
       return (
@@ -126,7 +139,12 @@ const factory = (Input) => {
           <div className={`${theme.templateValue} ${theme.value}`}>
             {this.props.template(selected)}
           </div>
-          {this.props.label ? <label className={theme.label}>{this.props.label}</label> : null}
+          {this.props.label
+            ? <label className={theme.label}>
+                {this.props.label}
+                {this.props.required ? <span className={theme.required}> * </span> : null}
+              </label>
+            : null}
           {this.props.error ? <span className={theme.error}>{this.props.error}</span> : null}
         </div>
       );
@@ -142,22 +160,47 @@ const factory = (Input) => {
       );
     };
 
+    handleFocus = event => {
+      event.stopPropagation();
+      if (!this.props.disabled) this.open();
+      if (this.props.onFocus) this.props.onFocus(event);
+    };
+
+    handleBlur = event => {
+      event.stopPropagation();
+      if (this.state.active) this.close();
+      if (this.props.onBlur) this.props.onBlur(event);
+    }
+
     render () {
-      const {template, theme, source, allowBlank, auto, ...others} = this.props; //eslint-disable-line no-unused-vars
+      const {
+        allowBlank, auto, required, onChange, onFocus, onBlur, //eslint-disable-line no-unused-vars
+        source, template, theme, ...others
+      } = this.props;
       const selected = this.getSelectedItem();
       const className = classnames(theme.dropdown, {
         [theme.up]: this.state.up,
         [theme.active]: this.state.active,
-        [theme.disabled]: this.props.disabled
+        [theme.disabled]: this.props.disabled,
+        [theme.required]: this.props.required
       }, this.props.className);
 
       return (
-        <div data-react-toolbox='dropdown' className={className}>
+        <div
+          className={className}
+          data-react-toolbox='dropdown'
+          onBlur={this.handleBlur}
+          onFocus={this.handleFocus}
+          tabIndex="0"
+        >
           <Input
             {...others}
+            tabIndex="-1"
             className={theme.value}
             onClick={this.handleClick}
+            required={this.props.required}
             readOnly
+            ref={node => { this.inputNode = node && node.getWrappedInstance(); }}
             type={template && selected ? 'hidden' : null}
             value={selected && selected.label ? selected.label : ''}
           />

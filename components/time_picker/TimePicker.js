@@ -12,16 +12,19 @@ const factory = (TimePickerDialog, Input) => {
   class TimePicker extends Component {
     static propTypes = {
       active: PropTypes.bool,
+      cancelLabel: PropTypes.string,
       className: PropTypes.string,
       error: PropTypes.string,
       format: PropTypes.oneOf(['24hr', 'ampm']),
       inputClassName: PropTypes.string,
       label: PropTypes.string,
       name: PropTypes.string,
+      okLabel: PropTypes.string,
       onChange: PropTypes.func,
+      onClick: PropTypes.func,
+      onDismiss: PropTypes.func,
       onEscKeyDown: PropTypes.func,
       onKeyPress: PropTypes.func,
-      onClick: PropTypes.func,
       onOverlayClick: PropTypes.func,
       readonly: PropTypes.bool,
       theme: PropTypes.shape({
@@ -41,13 +44,16 @@ const factory = (TimePickerDialog, Input) => {
     };
 
     componentWillReceiveProps (nextProps) {
-      if (this.state.active !== nextProps.active) {
+      if (nextProps.active !== this.props.active && this.state.active !== nextProps.active) {
         this.setState({ active: nextProps.active });
       }
     }
 
     handleDismiss = () => {
       this.setState({active: false});
+      if (this.props.onDismiss) {
+        this.props.onDismiss();
+      }
     };
 
     handleInputFocus = (event) => {
@@ -81,8 +87,9 @@ const factory = (TimePickerDialog, Input) => {
 
     render () {
       const {
-        active, // eslint-disable-line
-        format, inputClassName, onEscKeyDown, onOverlayClick, readonly, value, ...others
+        active, onDismiss, // eslint-disable-line
+        cancelLabel, format, inputClassName, okLabel, onEscKeyDown, onOverlayClick,
+        readonly, value, ...others
       } = this.props;
       const formattedTime = value ? time.formatTime(value, format) : '';
       return (
@@ -102,9 +109,11 @@ const factory = (TimePickerDialog, Input) => {
           />
           <TimePickerDialog
             active={this.state.active}
+            cancelLabel={cancelLabel}
             className={this.props.className}
             format={format}
             name={this.props.name}
+            okLabel={okLabel}
             onDismiss={this.handleDismiss}
             onEscKeyDown={onEscKeyDown}
             onOverlayClick={onOverlayClick}
