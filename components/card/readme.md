@@ -1,6 +1,6 @@
 # Card
 
-A [Card](https://www.google.com/design/spec/components/cards.html) is a piece of paper with unique related data that serves as an entry point to more detailed information. For example, a card could contain a photo, text, and a link about a single subject.
+A [Card](https://material.google.com/components/cards.html) is a piece of paper with unique related data that serves as an entry point to more detailed information. For example, a card could contain a photo, text, and a link about a single subject.
 
 Cards are composed of multiple subcomponents in React Toolbox. You can combine each of the subcomponents to create all different Material Design Cards given in the spec.
 
@@ -74,8 +74,8 @@ A versatile title block that can be used in various places on the card, includin
 | Name     | Description|
 |:---------|:-----------|
 | `cardTitle` | Class used for the root element.|
-| `large` | Added to the root element when the card has avatar.|
-| `small` | Added to the root element when the card has no avatar.|
+| `large` | Added to the root element when the card has no avatar.|
+| `small` | Added to the root element when the card has avatar.|
 | `subtitle` | Added to the subtitle element.|
 | `title` | Added to the title element.|
 

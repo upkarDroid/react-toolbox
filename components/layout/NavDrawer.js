@@ -16,12 +16,11 @@ const NavDrawer = ({ active, children, className, onOverlayClick, permanentAt, p
   });
 
   return (
-    <div data-react-toolbox='nav-drawer' className={rootClasses} onClick={onOverlayClick}>
-      <div data-react-toolbox='nav-drawer-scrim' className={theme.scrim}>
-        <aside data-react-toolbox='nav-drawer-content' className={drawerClasses}>
-          {children}
-        </aside>
-      </div>
+    <div data-react-toolbox='nav-drawer' className={rootClasses}>
+      <div data-react-toolbox='nav-drawer-scrim' className={theme.scrim} onClick={onOverlayClick} />
+      <aside data-react-toolbox='nav-drawer-content' className={drawerClasses}>
+        {children}
+      </aside>
     </div>
   );
 };
@@ -31,7 +30,7 @@ NavDrawer.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   onOverlayClick: PropTypes.func,
-  permanentAt: PropTypes.oneOf(['sm', 'md', 'lg', 'xl', 'xxl', 'xxxl']),
+  permanentAt: PropTypes.oneOf(['sm', 'smTablet', 'md', 'lg', 'lgTablet', 'xl', 'xxl', 'xxxl']),
   pinned: PropTypes.bool,
   scrollY: PropTypes.bool,
   theme: PropTypes.shape({
