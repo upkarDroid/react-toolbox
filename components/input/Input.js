@@ -97,16 +97,16 @@ const factory = (FontIcon) => {
 
     handleKeyDown = (event) => {
         const { onKeyDown } = this.props;
-        const value = event.target.value;
+        const valueFromEvent = event.target.value;
 
-        if (onKeyDown) onKeyDown(value, event);
+        if (onKeyDown) onKeyDown(valueFromEvent, event);
     }
 
     handleKeyUp = (event) => {
         const { onKeyUp } = this.props;
-        const value = event.target.value;
+        const valueFromEvent = event.target.value;
 
-        if (onKeyUp) onKeyUp(value, event);
+        if (onKeyUp) onKeyUp(valueFromEvent, event);
     }
 
     handleAutoresize = () => {
