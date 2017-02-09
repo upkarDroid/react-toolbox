@@ -160,7 +160,7 @@ const factory = (FontIcon) => {
     render () {
       const { children, disabled, error, floating, hint, icon,
               name, label: labelText, maxLength, multiline, required,
-              theme, type, value, onKeyPress, rows = 1, ...others} = this.props;
+              theme, type, value, onKeyPress, rows = 1, defaultValue,  ...others} = this.props;
       const length = maxLength && value ? value.length : 0;
       const labelClassName = classnames(theme.label, {[theme.fixed]: !floating});
 
@@ -175,7 +175,8 @@ const factory = (FontIcon) => {
         && value !== undefined
         && value !== ''
         && !(typeof value === Number && isNaN(value))
-        ) || (this.refs.input && this.refs.input.value !== '');
+        ) || (this.refs.input && this.refs.input.value !== '')
+          || (defaultValue && defaultValue !== '');
 
       const inputElementProps = {
         ...others,
