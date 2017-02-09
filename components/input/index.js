@@ -1,8 +1,8 @@
+import { INPUT } from '../identifiers.js';
 import { themr } from 'react-css-themr';
-import { INPUT } from '../identifiers';
-import { inputFactory } from './Input';
-import { FontIcon } from '../font_icon/FontIcon';
-import theme from './theme.css';
+import { inputFactory } from './Input.js';
+import FontIcon from '../font_icon/FontIcon.js';
+import theme from './theme.scss';
 
 const Input = inputFactory(FontIcon);
 const ThemedInput = themr(INPUT, theme, { withRef: true })(Input);

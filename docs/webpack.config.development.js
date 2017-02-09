@@ -1,12 +1,12 @@
 const path = require('path');
 const webpack = require('webpack');
+const autoprefixer = require('autoprefixer');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const TransferWebpackPlugin = require('transfer-webpack-plugin');
-const toolboxVariables = require('./toolbox-variables');
 
 module.exports = {
   context: __dirname,
-  devtool: 'inline-source-map',
+	devtool: 'inline-source-map',
   entry: [
     'webpack-hot-middleware/client',
     './app/index.js'
@@ -17,9 +17,11 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-    extensions: ['', '.js', '.scss', '.css', '.json', '.md'],
+    extensions: ['', '.scss', '.js', '.json', '.md'],
     packageMains: ['browser', 'web', 'browserify', 'main', 'style'],
-    alias: { 'react-toolbox': path.resolve(`${__dirname}./../components`) },
+    alias: {
+      'react-toolbox': path.resolve(__dirname + './../components')
+    },
     modulesDirectories: [
       'node_modules',
       path.resolve(__dirname, './node_modules'),
@@ -28,49 +30,27 @@ module.exports = {
     ]
   },
   module: {
-    loaders: [{
-      test: /\.js$/,
-      include: [path.resolve(__dirname, './app'), path.resolve(__dirname, './../components')],
-      loader: 'babel'
-    }, {
-      test: /\.css$/,
-      include: /node_modules/,
-      loaders: ['style-loader', 'css-loader']
-    }, {
-      test: /\.css$/,
-      include: [path.resolve(__dirname, './app'), path.resolve(`${__dirname}./../components`)],
-      loader: ExtractTextPlugin.extract('style', 'css?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss')
-    }, {
-      test: /\.txt$/,
-      include: path.resolve(__dirname, './app/components/layout/main/modules'),
-      loader: 'raw'
-    }, {
-      test: /\.md$/,
-      include: [path.join(__dirname, './../components'), path.join(__dirname, './app')],
-      loader: 'html!highlight!markdown'
-    }]
+    loaders: [
+      {
+        test: /\.js$/,
+        exclude: /(node_modules)/,
+        loader: 'babel'
+      }, {
+        test: /\.(scss|css)$/,
+        loader: ExtractTextPlugin.extract('style', 'css?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass?sourceMap')
+      }, {
+        test: /\.(txt)$/,
+        loader: 'raw',
+        include: path.resolve(__dirname, './app/components/layout/main/modules')
+      }, {
+        test: /\.(md)$/,
+        loader: 'html!highlight!markdown'
+      }
+    ]
   },
-  postcss (webpackInstance) {
-    return [
-      require('postcss-import')({
-        addDependencyTo: webpackInstance,
-        root: path.join(__dirname, './../'),
-        path: [
-          path.join(__dirname, './app'),
-          path.join(__dirname, './../components')
-        ]
-      }),
-      require('postcss-mixins')(),
-      require('postcss-each')(),
-      require('postcss-cssnext')({
-        features: {
-          customProperties: {
-            variables: toolboxVariables
-          }
-        }
-      }),
-      require('postcss-reporter')({ clearMessages: true })
-    ];
+  postcss: [autoprefixer],
+  sassLoader: {
+    data: '@import "' + path.resolve(__dirname, 'app/theme/_theme.scss') + '";'
   },
   plugins: [
     new ExtractTextPlugin('docs.css', { allChunks: true }),

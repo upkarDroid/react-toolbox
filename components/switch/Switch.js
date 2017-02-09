@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 import { themr } from 'react-css-themr';
-import { SWITCH } from '../identifiers';
-import rippleFactory from '../ripple/Ripple';
-import thumbFactory from './Thumb';
+import { SWITCH } from '../identifiers.js';
+import rippleFactory from '../ripple/Ripple.js';
+import thumbFactory from './Thumb.js';
 
 const factory = (Thumb) => {
   class Switch extends Component {
@@ -16,7 +16,6 @@ const factory = (Thumb) => {
       onBlur: PropTypes.func,
       onChange: PropTypes.func,
       onFocus: PropTypes.func,
-      ripple: PropTypes.bool,
       theme: PropTypes.shape({
         disabled: PropTypes.string,
         field: PropTypes.string,
@@ -25,14 +24,14 @@ const factory = (Thumb) => {
         on: PropTypes.string,
         ripple: PropTypes.string,
         text: PropTypes.string,
-        thumb: PropTypes.string,
-      }),
+        thumb: PropTypes.string
+      })
     };
 
     static defaultProps = {
       checked: false,
       className: '',
-      disabled: false,
+      disabled: false
     };
 
     handleToggle = (event) => {
@@ -42,38 +41,30 @@ const factory = (Thumb) => {
       }
     };
 
-    blur() {
-      this.inputNode.blur();
+    blur () {
+      this.refs.input.blur();
     }
 
-    focus() {
-      this.inputNode.focus();
+    focus () {
+      this.refs.input.focus();
     }
 
-    render() {
-      const {
-        checked,
-        className,
-        disabled,
-        onChange, // eslint-disable-line no-unused-vars
-        ripple,
-        theme,
-        ...others
-      } = this.props;
+    render () {
+      const { className, checked, disabled, onChange, theme, ...others } = this.props; //eslint-disable-line no-unused-vars
       const _className = classnames(theme[disabled ? 'disabled' : 'field'], className);
       return (
-        <label data-react-toolbox="switch" className={_className}>
+        <label data-react-toolbox='switch' className={_className}>
           <input
             {...others}
             checked={this.props.checked}
             className={theme.input}
             onClick={this.handleToggle}
             readOnly
-            ref={(node) => { this.inputNode = node; }}
-            type="checkbox"
+            ref='input'
+            type='checkbox'
           />
           <span className={theme[checked ? 'on' : 'off']}>
-            <Thumb disabled={this.props.disabled} theme={theme} ripple={ripple} />
+            <Thumb disabled={this.props.disabled} theme={theme} />
           </span>
           {this.props.label ? <span className={theme.text}>{this.props.label}</span> : null}
         </label>

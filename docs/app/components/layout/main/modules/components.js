@@ -42,6 +42,7 @@ import DrawerExample1 from './examples/drawer_example_1.txt';
 import DrodpownExample1 from './examples/dropdown_example_1.txt';
 import FontIconExample1 from './examples/font_icon_example_1.txt';
 import InputExample1 from './examples/input_example_1.txt';
+import LayoutExample1 from './examples/layout_example_1.txt';
 import LinkExample1 from './examples/link_example_1.txt';
 import ListExample1 from './examples/list_example_1.txt';
 import MenuExample1 from './examples/menu_example_1.txt';
@@ -139,7 +140,8 @@ export default {
   layout: {
     name: 'Layout',
     docs: Layout,
-    path: '/components/layout'
+    path: '/components/layout',
+    examples: [LayoutExample1]
   },
   link: {
     name: 'Link',

@@ -116,4 +116,3 @@ It is required to provide either a label or an icon (or both).
 | `disabled` | Added to the navigation tab element in case it's disabled.|
 | `hidden` | Added to the navigation tab element in case it's hidden.|
 | `label` | Added to the navigation tab element in case it's active.|
-| `rippleWrapper` | Used for the ripple wrapper element.|

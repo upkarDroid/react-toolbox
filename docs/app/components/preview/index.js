@@ -1,9 +1,11 @@
-/* eslint-disable no-eval*/
+/*eslint-disable no-eval*/
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { ThemeProvider } from 'react-css-themr';
 import { transform } from 'babel-standalone';
 import * as ReactToolbox from 'react-toolbox';
-import style from './style.css';
+import theme from '../../theme/theme.js';
+import style from './style';
 
 const ERROR_TIMEOUT = 500;
 
@@ -55,7 +57,9 @@ const Preview = React.createClass({
   },
 
   buildScope (mountNode) {
-    return Object.keys(this.props.scope).map(key => this.props.scope[key]).concat(mountNode);
+    return Object.keys(this.props.scope).map((key) => {
+      return this.props.scope[key];
+    }).concat(mountNode);
   },
 
   executeCode () {
@@ -69,13 +73,17 @@ const Preview = React.createClass({
     }
 
     try {
-      ReactDOM.render(eval(this.compileCode())(...scope), mountNode);
+      ReactDOM.render(
+        <ThemeProvider theme={theme}>
+          {eval(this.compileCode())(...scope)}
+        </ThemeProvider>
+      , mountNode);
       if (this.state.error) {
-        this.setState({ error: null });
+        this.setState({error: null});
       }
     } catch (err) {
       this.setTimeout(() => {
-        this.setState({ error: err.toString() });
+        this.setState({error: err.toString()});
       }, ERROR_TIMEOUT);
     }
   },

@@ -1,8 +1,8 @@
 import { themr } from 'react-css-themr';
-import { DROPDOWN } from '../identifiers';
-import { dropdownFactory } from './Dropdown';
+import { DROPDOWN } from '../identifiers.js';
+import { dropdownFactory } from './Dropdown.js';
 import { Input } from '../input';
-import theme from './theme.css';
+import theme from './theme.scss';
 
 const Dropdown = dropdownFactory(Input);
 const ThemedDropdown = themr(DROPDOWN, theme)(Dropdown);

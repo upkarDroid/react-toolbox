@@ -1,6 +1,5 @@
-import 'highlight.js/styles/github-gist';
 import React from 'react';
-import style from './style.css';
+import style from './style';
 
 const Markdown = (props) => {
   let className = style.markdown;

@@ -1,32 +1,28 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 
-const FontIcon = ({ alt, children, className, theme, value, ...other}) => ( // eslint-disable-line
+const FontIcon = ({ children, className, value, ...other}) => (
   <span
-    data-react-toolbox="font-icon"
-    aria-label={alt}
-    className={classnames({ 'material-icons': typeof value === 'string' || typeof children === 'string' }, className)}
+    data-react-toolbox='font-icon'
+    className={classnames({'material-icons': typeof value === 'string' || typeof children === 'string'}, className)}
     {...other}
   >
-    <span aria-hidden="true">{value}</span>
+    {value}
     {children}
   </span>
 );
 
 FontIcon.propTypes = {
-  alt: PropTypes.string,
-  children: PropTypes.node,
+  children: PropTypes.any,
   className: PropTypes.string,
-  theme: PropTypes.object, // eslint-disable-line
   value: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.element,
-  ]),
+    PropTypes.element
+  ])
 };
 
 FontIcon.defaultProps = {
-  alt: '',
-  className: '',
+  className: ''
 };
 
 export default FontIcon;

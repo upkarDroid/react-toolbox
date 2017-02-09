@@ -1,45 +1,113 @@
-import React, { cloneElement, Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
-import { themr } from 'react-css-themr';
-import { TABLE } from '../identifiers';
-import InjectCheckbox from '../checkbox/Checkbox';
-import InjectTableCell from './TableCell';
+import utils from '../utils/utils';
 
-const factory = (Checkbox, TableCell) => {
+const factory = (Checkbox) => {
   class TableRow extends Component {
     static propTypes = {
-      children: PropTypes.node,
-      className: PropTypes.string,
-      idx: PropTypes.number,
+      data: PropTypes.object,
+      index: PropTypes.number,
+      model: PropTypes.object,
+      onChange: PropTypes.func,
+      onRowClick: PropTypes.func,
       onSelect: PropTypes.func,
       selectable: PropTypes.bool,
       selected: PropTypes.bool,
       theme: PropTypes.shape({
-        checkboxCell: PropTypes.string,
+        editable: PropTypes.string,
         row: PropTypes.string,
-        selected: PropTypes.string,
-      }),
+        selectable: PropTypes.string,
+        selected: PropTypes.string
+      })
     };
 
-    handleSelect = (value) => {
-      const { idx, onSelect } = this.props;
-      if (onSelect) onSelect(idx, value);
+    handleInputChange = (index, key, type, event) => {
+      let value;
+      switch (type) {
+        case 'checkbox':
+          value = event.target.checked;
+          break;
+        // Handle contentEditable
+        case 'text':
+          value = event.target.textContent;
+          break;
+        default:
+          value = event.target.value;
+          break;
+      }
+
+      const onChange = this.props.model[key].onChange || this.props.onChange;
+      onChange(index, key, value);
     };
 
-    render() {
-      const { children, className, selectable, idx, selected, theme, ...other } = this.props; // eslint-disable-line
-      const _className = classnames(theme.row, {
-        [theme.selected]: selectable && selected,
-      }, className);
+    renderSelectCell () {
+      if (this.props.selectable) {
+        return (
+          <td className={this.props.theme.selectable}>
+            <Checkbox checked={this.props.selected} onChange={this.props.onSelect} />
+          </td>
+        );
+      }
+    }
+
+    renderCells () {
+      return Object.keys(this.props.model).map((key) => {
+        return <td key={key} onClick={this.props.onRowClick}>{this.renderCell(key)}</td>;
+      });
+    }
+
+    renderCell (key) {
+      const value = this.props.data[key];
+
+      // if the value is a valid React element return it directly, since it
+      // cannot be edited and should not be converted to a string...
+      if (React.isValidElement(value)) { return value; }
+
+      const onChange = this.props.model[key].onChange || this.props.onChange;
+      if (onChange) {
+        return this.renderInput(key, value);
+      } else if (value) {
+        return value.toString();
+      }
+    }
+
+    renderInput (key, value) {
+      const index = this.props.index;
+      const inputType = utils.inputTypeForPrototype(this.props.model[key].type);
+      const inputValue = utils.prepareValueForInput(value, inputType);
+      const checked = inputType === 'checkbox' && value ? true : null;
+
+      if (inputType === 'text') {
+        return (
+          <div
+            children={inputValue}
+            contentEditable
+            suppressContentEditableWarning
+            onInput={this.handleInputChange.bind(null, index, key, inputType)}
+          />
+        );
+      }
+
       return (
-        <tr {...other} className={_className}>
-          {selectable && <TableCell className={theme.checkboxCell}>
-            <Checkbox checked={selected} onChange={this.handleSelect} />
-          </TableCell>}
-          {React.Children.map(children, (child, index) => cloneElement(child, {
-            column: index,
-            tagName: 'td',
-          }))}
+        <input
+          checked={checked}
+          onChange={this.handleInputChange.bind(null, index, key, inputType)}
+          type={inputType}
+          value={inputValue}
+        />
+      );
+    }
+
+    render () {
+      const className = classnames(this.props.theme.row, {
+        [this.props.theme.editable]: this.props.onChange,
+        [this.props.theme.selected]: this.props.selected
+      });
+
+      return (
+        <tr data-react-toolbox-table='row' className={className}>
+          {this.renderSelectCell()}
+          {this.renderCells()}
         </tr>
       );
     }
@@ -48,7 +116,4 @@ const factory = (Checkbox, TableCell) => {
   return TableRow;
 };
 
-const TableRow = factory(InjectCheckbox, InjectTableCell);
-export default themr(TABLE)(TableRow);
-export { factory as tableRowFactory };
-export { TableRow };
+export default factory;

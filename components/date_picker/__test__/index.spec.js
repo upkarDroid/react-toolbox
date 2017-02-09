@@ -1,104 +1,83 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import theme from '../theme.css';
-import { DatePickerDialog, Calendar } from '../DatePicker';
+import expect from 'expect';
+import theme from '../theme.scss';
+import { DatePickerDialog } from '../DatePicker';
+import utils from '../../utils/testing';
 
-describe('DatePickerDialog', () => {
-  describe('#on mount', () => {
-    it('passes value through to calendar if no maxDate/minDate specified', () => {
+describe('DatePickerDialog', function () {
+  describe('#on mount', function () {
+    it('passes value through to calendar if no maxDate/minDate specified', function () {
       const value = new Date(2016, 1, 1);
-      const wrapper = shallow(<DatePickerDialog theme={theme} value={value} />);
-      expect(wrapper.find(Calendar).props().selectedDate).toBe(value);
+      const wrapper = utils.shallowRenderComponent(DatePickerDialog, {theme, value});
+      expect(getDatePassedToCalendar(wrapper)).toBe(value);
     });
 
-    describe('when minDate but not maxDate specified', () => {
+    describe('when minDate but not maxDate specified', function () {
       const minDate = new Date(2016, 1, 2);
 
-      it('passes through a value after minDate', () => {
+      it('passes through a value after minDate', function () {
         const value = new Date(2016, 1, 3);
-        const wrapper = shallow(<DatePickerDialog theme={theme} minDate={minDate} value={value} />);
-        expect(wrapper.find(Calendar).props().selectedDate).toBe(value);
+        const wrapper = utils.shallowRenderComponent(DatePickerDialog, {theme, value, minDate});
+        expect(getDatePassedToCalendar(wrapper)).toBe(value);
       });
 
-      it('sanitises a value before minDate to minDate', () => {
-        const wrapper = shallow(
-          <DatePickerDialog
-            theme={theme}
-            minDate={minDate}
-            value={new Date(2016, 1, 1)}
-          />,
-        );
-        expect(wrapper.find(Calendar).props().selectedDate).toBe(minDate);
+      it('sanitises a value before minDate to minDate', function () {
+        const wrapper = utils.shallowRenderComponent(DatePickerDialog, {
+          theme, value: new Date(2016, 1, 1), minDate
+        });
+        expect(getDatePassedToCalendar(wrapper)).toBe(minDate);
       });
     });
 
-    describe('when maxDate but not minDate specified', () => {
+    describe('when maxDate but not minDate specified', function () {
       const maxDate = new Date(2016, 1, 2);
 
-      it('passes through a value before maxDate', () => {
+      it('passes through a value before maxDate', function () {
         const value = new Date(2016, 1, 1);
-        const wrapper = shallow(
-          <DatePickerDialog
-            theme={theme}
-            maxDate={maxDate}
-            value={value}
-          />,
-        );
-        expect(wrapper.find(Calendar).props().selectedDate).toBe(value);
+        const wrapper = utils.shallowRenderComponent(DatePickerDialog, {theme, value, maxDate});
+        expect(getDatePassedToCalendar(wrapper)).toBe(value);
       });
 
-      it('sanitises a value after maxDate to maxDate', () => {
-        const wrapper = shallow(
-          <DatePickerDialog
-            theme={theme}
-            maxDate={maxDate}
-            value={new Date(2016, 1, 3)}
-          />,
-        );
-        expect(wrapper.find(Calendar).props().selectedDate).toBe(maxDate);
+      it('sanitises a value after maxDate to maxDate', function () {
+        const wrapper = utils.shallowRenderComponent(DatePickerDialog, {
+          theme, value: new Date(2016, 1, 3), maxDate
+        });
+        expect(getDatePassedToCalendar(wrapper)).toBe(maxDate);
       });
     });
 
-    describe('if both minDate and maxDate are set', () => {
+    describe('if both minDate and maxDate are set', function () {
       const minDate = new Date(2016, 1, 2);
       const maxDate = new Date(2016, 1, 4);
 
-      it('sanitises value to minDate if value is before minDate', () => {
-        const wrapper = shallow(
-          <DatePickerDialog
-            theme={theme}
-            minDate={minDate}
-            maxDate={maxDate}
-            value={new Date(2016, 1, 1)}
-          />,
-        );
-        expect(wrapper.find(Calendar).props().selectedDate).toBe(minDate);
+      it('sanitises value to minDate if value is before minDate', function () {
+        const wrapper = utils.shallowRenderComponent(DatePickerDialog, {
+          theme,
+          value: new Date(2016, 1, 1),
+          minDate,
+          maxDate
+        });
+        expect(getDatePassedToCalendar(wrapper)).toBe(minDate);
       });
 
-      it('sanitises value to maxDate if value is after maxDate', () => {
-        const wrapper = shallow(
-          <DatePickerDialog
-            theme={theme}
-            minDate={minDate}
-            maxDate={maxDate}
-            value={new Date(2016, 1, 5)}
-          />,
-        );
-        expect(wrapper.find(Calendar).props().selectedDate).toBe(maxDate);
+      it('sanitises value to maxDate if value is after maxDate', function () {
+        const wrapper = utils.shallowRenderComponent(DatePickerDialog, {
+          theme,
+          value: new Date(2016, 1, 5),
+          minDate,
+          maxDate
+        });
+        expect(getDatePassedToCalendar(wrapper)).toBe(maxDate);
       });
 
-      it('doesn\'t sanitise when value is between maxDate/minDate', () => {
+      it('doesn\'t sanitise when value is between maxDate/minDate', function () {
         const value = new Date(2016, 1, 3);
-        const wrapper = shallow(
-          <DatePickerDialog
-            theme={theme}
-            minDate={minDate}
-            maxDate={maxDate}
-            value={value}
-          />,
-        );
-        expect(wrapper.find(Calendar).props().selectedDate).toBe(value);
+        const wrapper = utils.shallowRenderComponent(DatePickerDialog, {theme, value, minDate, maxDate});
+        expect(getDatePassedToCalendar(wrapper)).toBe(value);
       });
     });
+
+    function getDatePassedToCalendar (wrapper) {
+      return wrapper.props.children[1].props.children.props.selectedDate;
+    }
   });
 });

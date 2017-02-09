@@ -1,5 +1,4 @@
 import * as React from "react";
-
 export interface TooltipTheme {
   /**
    * Added to the tooltip element.
@@ -15,34 +14,17 @@ export interface TooltipTheme {
   tooltipWrapper?: string;
 }
 
-export interface TooltipProps {
-  /**
-   * Additional class added to composed component.
-   */
-  className?: string;
-  /**
-   * Callback to be invoked when Component is clicked.
-   */
-  onClick?: Function;
-  /**
-   * Callback called when the mouse enters the Component.
-   */
-  onMouseEnter?: Function;
-  /**
-   * Callback called when the mouse leaves the Component.
-   */
-  onMouseLeave?: Function;
+interface TooltipProps {
   /**
    * Classnames object defining the component style.
    */
   theme?: TooltipTheme;
   /**
-   * The text (or node) used for the tooltip.
+   * The text string to use for the tooltip.
    */
-  tooltip?: React.ReactNode;
+  tooltip?: string;
   /**
    * Amount of time in miliseconds spent before the tooltip is visible.
-   * @default 0
    */
   tooltipDelay?: number;
   /**
@@ -50,20 +32,6 @@ export interface TooltipProps {
    * @default true
    */
   tooltipHideOnClick?: boolean;
-  /**
-   * Tooltip position.
-   * @default "vertical"
-   */
-  tooltipPosition?: "bottom" | "top" | "left" | "right" | "horizontal" | "vertical";
-  /**
-   * Determines the tooltip should be toggled when clicked. This is useful for mobile where there is no mouse enter.
-   * @default false
-   */
-  tooltipShowOnClick?: boolean;
-  /**
-   * Additional attributes passed to composed component.
-   */
-  [key: string]: any;
 }
 
 declare class TooltipComponent<P, S> extends React.Component<P, S> {

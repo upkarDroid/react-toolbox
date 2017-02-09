@@ -1,22 +1,15 @@
 import { themr } from 'react-css-themr';
-import { TABLE } from '../identifiers';
+import { TABLE } from '../identifiers.js';
 import { Checkbox } from '../checkbox';
-import { FontIcon } from '../font_icon';
+import { tableFactory } from './Table.js';
+import tableHeadFactory from './TableHead.js';
+import tableRowFactory from './TableRow.js';
+import theme from './theme.scss';
 
-import { tableFactory } from './Table';
-import { tableHeadFactory } from './TableHead';
-import { tableRowFactory } from './TableRow';
-import { tableCellFactory } from './TableCell';
-import theme from './theme.css';
-
-const applyTheme = Component => themr(TABLE, theme)(Component);
-const ThemedTableCell = applyTheme(tableCellFactory(FontIcon));
-const ThemedTableHead = applyTheme(tableHeadFactory(Checkbox, ThemedTableCell));
-const ThemedTableRow = applyTheme(tableRowFactory(Checkbox, ThemedTableCell));
+const applyTheme = (Component) => themr(TABLE, theme)(Component);
+const ThemedTableHead = applyTheme(tableHeadFactory(Checkbox));
+const ThemedTableRow = applyTheme(tableRowFactory(Checkbox));
 const ThemedTable = applyTheme(tableFactory(ThemedTableHead, ThemedTableRow));
 
 export default ThemedTable;
 export { ThemedTable as Table };
-export { ThemedTableHead as TableHead };
-export { ThemedTableRow as TableRow };
-export { ThemedTableCell as TableCell };
