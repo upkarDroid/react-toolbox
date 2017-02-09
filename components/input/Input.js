@@ -23,6 +23,8 @@ const factory = (FontIcon) => {
       name: React.PropTypes.string,
       onBlur: React.PropTypes.func,
       onChange: React.PropTypes.func,
+      onKeyUp: React.PropTypes.func,
+      onKeyDown: React.PropTypes.func,
       onFocus: React.PropTypes.func,
       onKeyPress: React.PropTypes.func,
       required: React.PropTypes.bool,
@@ -93,6 +95,20 @@ const factory = (FontIcon) => {
       if (onChange) onChange(value, event);
     };
 
+    handleKeyDown = (event) => {
+        const { onKeyDown } = this.props;
+        const valueFromEvent = event.target.value;
+
+        if (onKeyDown) onKeyDown(valueFromEvent, event);
+    }
+
+    handleKeyUp = (event) => {
+        const { onKeyUp } = this.props;
+        const valueFromEvent = event.target.value;
+
+        if (onKeyUp) onKeyUp(valueFromEvent, event);
+    }
+
     handleAutoresize = () => {
       const element = this.refs.input;
       const rows = this.props.rows;
@@ -155,15 +171,18 @@ const factory = (FontIcon) => {
         [theme.withIcon]: icon
       }, this.props.className);
 
-      const valuePresent = value !== null
+      const valuePresent = (value !== null
         && value !== undefined
         && value !== ''
-        && !(typeof value === Number && isNaN(value));
+        && !(typeof value === Number && isNaN(value))
+        ) || (this.refs.input && this.refs.input.value !== '');
 
       const inputElementProps = {
         ...others,
         className: classnames(theme.inputElement, {[theme.filled]: valuePresent}),
         onChange: this.handleChange,
+        onKeyDown: this.handleKeyDown,
+        onKeyUp: this.handleKeyUp,
         ref: 'input',
         role: 'input',
         name,
