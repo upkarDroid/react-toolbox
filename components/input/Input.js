@@ -160,7 +160,7 @@ const factory = (FontIcon) => {
     render () {
       const { children, disabled, error, floating, hint, icon,
               name, label: labelText, maxLength, multiline, required,
-              theme, type, value, onKeyPress, rows = 1, defaultValue,  ...others} = this.props;
+              theme, type, value, onKeyPress, rows = 1, defaultValue, ...others} = this.props;
       const length = maxLength && value ? value.length : 0;
       const labelClassName = classnames(theme.label, {[theme.fixed]: !floating});
 
@@ -190,7 +190,8 @@ const factory = (FontIcon) => {
         disabled,
         required,
         type,
-        value
+        value,
+        defaultValue
       };
       if (!multiline) {
         inputElementProps.maxLength = maxLength;
