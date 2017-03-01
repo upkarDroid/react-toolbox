@@ -65,7 +65,7 @@ const factory = (Overlay, Button) => {
       }, this.props.className);
 
       return (
-        <Overlay invisible>
+        <Overlay invisible className="snackbar-overlay">
           <div data-react-toolbox='snackbar' className={className}>
             <span className={theme.label}>
               {label}
