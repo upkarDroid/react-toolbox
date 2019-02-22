@@ -4,7 +4,7 @@
 
 <!-- example -->
 ```jsx
-import {Tab, Tabs} from 'react-toolbox';
+import {(Tab, Tabs)} from 'react-toolbox';
 
 class TabsTest extends React.Component {
   state = {

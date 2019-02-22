@@ -4,7 +4,7 @@ A [button](https://material.google.com/components/buttons.html) clearly communic
 
 <!-- example -->
 ```jsx
-import {Button, IconButton} from 'react-toolbox/lib/button';
+import {(Button, IconButton)} from 'react-toolbox/lib/button';
 
 const GithubIcon = () => (
   <svg viewBox="0 0 284 277">

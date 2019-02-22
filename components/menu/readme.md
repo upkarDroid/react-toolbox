@@ -4,7 +4,7 @@ A [Menu](https://material.google.com/components/menus.html) is a temporary piece
 
 <!-- example -->
 ```jsx
-import {IconMenu, MenuItem, MenuDivider } from 'react-toolbox/lib/menu';
+import {(IconMenu, MenuItem, MenuDivider) } from 'react-toolbox/lib/menu';
 
 const MenuTest = () => (
   <IconMenu icon='more_vert' position='topLeft' menuRipple>
